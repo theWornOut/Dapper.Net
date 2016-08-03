@@ -24,13 +24,15 @@ namespace Dapper.Net
             GetOrdersList();
         }
 
+        private SqlConnection Connection()
+        {
+            return new SqlConnection("data source =.; database = Northwind; integrated security = true;");
+        }
+
         private void GetOrdersList()
         {
-            using (var sqlConn = new SqlConnection("data source=.;database=Northwind;integrated security=true;"))
-            {
-                IEnumerable<Orders> ordersList = sqlConn.Query<Orders>("select * from orders");
-                dataGridView1.DataSource = ordersList;
-            }
+            IEnumerable<Orders> ordersList = Connection().Query<Orders>("select * from orders");
+            dataGridView1.DataSource = ordersList;
         }
     }
 }
