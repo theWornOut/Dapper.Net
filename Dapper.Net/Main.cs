@@ -4,7 +4,9 @@ using System.Collections.Generic;
 using System.Configuration;
 using System.Data.SqlClient;
 using System.Windows.Forms;
+using System.Linq;
 
+//Değiştirilecek. Dinamik yapı kazandırılmalı.
 namespace Dapper.Net
 {
     public partial class Main : Form
@@ -25,7 +27,7 @@ namespace Dapper.Net
             }
         }
 
-        private void InsertOrders(Customers customer)
+        private void InsertCustomer(Customers customer)
         {
             using (var connection = new SqlConnection(sConn))
             {
@@ -33,19 +35,19 @@ namespace Dapper.Net
             }
         }
 
-        private void UpdateOrders(Customers customer)
+        private void UpdateCustomer(Customers customer)
         {
             using (var connection = new SqlConnection(sConn))
             {
-                connection.Execute("update customers set CustomerID = @CustomerID, CompanyName = @CompanyName, ContactName= @ContactName, ContactTitle = @ContactTitle where CustomerID = @CustomerID", customer);
+                connection.Execute("update customers set CustomerID = '" + customer.CustomerID + "', CompanyName = '" + customer.CompanyName + "', ContactName= '" + customer.ContactName + "', ContactTitle = '" + customer.ContactTitle + "' where CustomerID = '" + customer.CustomerID + "'");
             }
         }
 
-        private void DeleteOrders(Customers customer)
+        private void DeleteCustomer(Customers customer)
         {
             using (var connection = new SqlConnection(sConn))
             {
-                connection.Execute("delete from customers where CustomerID = @CustomerID", customer);
+                connection.Execute("delete from customers where CustomerID = '" + customer.CustomerID + "'");
             }
         }
 
@@ -73,17 +75,31 @@ namespace Dapper.Net
             c.ContactName = textBox3.Text;
             c.ContactTitle = textBox4.Text;
 
-            InsertOrders(c);
+            InsertCustomer(c);
         }
 
         private void btnUpdate_Click(object sender, EventArgs e)
         {
-            //UpdateOrders();
+            using (var connection = new SqlConnection(sConn))
+            {
+                var c = connection.Query<Customers>("select * from customers where CustomerID = '" + textBox1.Text + "'").FirstOrDefault();
+                c.CustomerID = textBox1.Text;
+                c.CompanyName = textBox2.Text;
+                c.ContactName = textBox3.Text;
+                c.ContactTitle = textBox4.Text;
+
+                UpdateCustomer(c);
+            }
         }
 
         private void btnDelete_Click(object sender, EventArgs e)
         {
-            //DeleteOrders();
+            using (var connection = new SqlConnection(sConn))
+            {
+                var c = connection.Query<Customers>("select * from customers where CustomerID = '" + textBox1.Text + "'").FirstOrDefault();
+
+                DeleteCustomer(c);
+            }
         }
     }
 }
