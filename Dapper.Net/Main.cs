@@ -1,6 +1,7 @@
 ﻿using Dapper.Net.Models;
 using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Data.SqlClient;
 using System.Windows.Forms;
 
@@ -8,35 +9,44 @@ namespace Dapper.Net
 {
     public partial class Main : Form
     {
+        string sConn = "";
         public Main()
         {
             InitializeComponent();
-        }
-
-        private SqlConnection Connection()
-        {
-            return new SqlConnection("data source =.; database = Northwind; integrated security = true;");
+            sConn = ConfigurationManager.ConnectionStrings["MyDatabases"].ConnectionString;
         }
 
         private IEnumerable<Customers> GetCustomersList()
         {
-            IEnumerable<Customers> ordersList = Connection().Query<Customers>("select * from customers");
-            return ordersList;
+            using (var connection = new SqlConnection(sConn))
+            {
+                IEnumerable<Customers> ordersList = connection.Query<Customers>("select * from customers");
+                return ordersList;
+            }
         }
 
         private void InsertOrders(Customers customer)
         {
-            Connection().Execute("insert into customers(CustomerID, CompanyName,ContactName,ContactTitle) VALUES (@CustomerID, @CompanyName, @ContactName, @ContactTitle); select * from customers", customer);
+            using (var connection = new SqlConnection(sConn))
+            {
+                connection.Execute("insert into customers(CustomerID, CompanyName,ContactName,ContactTitle) VALUES (@CustomerID, @CompanyName, @ContactName, @ContactTitle); select * from customers", customer);
+            }
         }
 
         private void UpdateOrders(Customers customer)
         {
-            Connection().Execute("update customers set CustomerID = @CustomerID, CompanyName = @CompanyName, ContactName= @ContactName, ContactTitle = @ContactTitle where CustomerID = @CustomerID", customer);
+            using (var connection = new SqlConnection(sConn))
+            {
+                connection.Execute("update customers set CustomerID = @CustomerID, CompanyName = @CompanyName, ContactName= @ContactName, ContactTitle = @ContactTitle where CustomerID = @CustomerID", customer);
+            }
         }
 
         private void DeleteOrders(Customers customer)
         {
-            Connection().Execute("delete from customers where CustomerID = @CustomerID", customer);
+            using (var connection = new SqlConnection(sConn))
+            {
+                connection.Execute("delete from customers where CustomerID = @CustomerID", customer);
+            }
         }
 
         private void dataGridView1_CellMouseClick(object sender, DataGridViewCellMouseEventArgs e)
