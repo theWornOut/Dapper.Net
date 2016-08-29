@@ -23,14 +23,12 @@ namespace Dapper.Net.Business
 
         public void InsertCustomer(Customers customer)
         {
-            _connection.Execute("insert into customers(CustomerID, CompanyName,ContactName,ContactTitle) VALUES (@CustomerID, @CompanyName, @ContactName, @ContactTitle); select * from customers", customer);
+            _connection.Execute("insert into customers(CustomerID, CompanyName,ContactName,ContactTitle) VALUES (@CustomerID, @CompanyName, @ContactName, @ContactTitle); select * from customers;", customer);
         }
 
         public void UpdateCustomer(Customers customer)
         {
-            /*_connection.Execute("update customers set CompanyName = '" + customer.CompanyName + "', ContactName= '" + customer.ContactName + "', ContactTitle = '" + customer.ContactTitle + "' where CustomerID = '" + customer.CustomerID + "'");*/
-
-            _connection.Execute("update customers set CompanyName = '" + customer.CompanyName + "' where CustomerID '" + customer.CustomerID + "'");
+            _connection.Execute("update customers set CompanyName = '" + customer.CompanyName + "', ContactName= '" + customer.ContactName + "', ContactTitle = '" + customer.ContactTitle + "' where CustomerID = '" + customer.CustomerID + "'");
         }
 
         public void DeleteCustomer(Customers customer)
