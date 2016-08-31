@@ -38,22 +38,18 @@ namespace Dapper.Net
             c.ContactTitle = textBox4.Text;
 
             customerController.InsertCustomer(c);
-            customerController.GetCustomersList();
         }
 
         private void btnUpdate_Click(object sender, EventArgs e)
         {
             Customers c = customerController.FindCustomer(textBox1.Text);
             customerController.UpdateCustomer(c);
-            customerController.GetCustomersList();
-
         }
 
         private void btnDelete_Click(object sender, EventArgs e)
         {
             Customers c = customerController.FindCustomer(textBox1.Text);
             customerController.DeleteCustomer(c);
-            customerController.GetCustomersList();
         }
     }
 }
