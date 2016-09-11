@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
+using System.Linq;
 using System.Windows.Forms;
 
 namespace Dapper.Net
@@ -18,57 +19,57 @@ namespace Dapper.Net
             return new SqlConnection("data source =.; database = Northwind; integrated security = true;");
         }
 
-        private IEnumerable<Customers> GetCustomersList()
+        private IEnumerable<Categories> GetCategoriesList()
         {
-            IEnumerable<Customers> ordersList = Connection().Query<Customers>("select * from customers");
-            return ordersList;
+            IEnumerable<Categories> categoriesList = Connection().Query<Categories>("select * from Categories");
+            return categoriesList;
         }
 
-        private void InsertOrders(Customers customer)
+        private void InsertOrders(Categories customer)
         {
-            Connection().Execute("insert into customers(CustomerID, CompanyName,ContactName,ContactTitle) VALUES (@CustomerID, @CompanyName, @ContactName, @ContactTitle); select * from customers", customer);
+            Connection().Execute("insert into categories(CategoryID, CategoryName,Description,Picture) VALUES (@CategoryID, @CategoryName, @Description, @Picture); select * from category", customer);
         }
 
-        private void UpdateOrders(Customers customer)
+        private void UpdateOrders(Categories customer)
         {
-            Connection().Execute("update customers set CustomerID = @CustomerID, CompanyName = @CompanyName, ContactName= @ContactName, ContactTitle = @ContactTitle where CustomerID = @CustomerID", customer);
+            Connection().Execute("update categories set CategoryID = @CategoryID, CategoryName = @CategoryName, Description = @Description, Picture = @Picture where CustomerID = @CategoryID", customer);
         }
 
-        private void DeleteOrders(Customers customer)
+        private void DeleteOrders(Categories customer)
         {
-            Connection().Execute("delete from customers where CustomerID = @CustomerID", customer);
+            Connection().Execute("delete from categories where CategoryID = @CategoryID", customer);
         }
 
         private void dataGridView1_CellMouseClick(object sender, DataGridViewCellMouseEventArgs e)
         {
             if (e.RowIndex != -1)
             {
-                textBox1.Text = dataGridView1.CurrentRow.Cells["CustomerID"].Value.ToString();
-                textBox2.Text = dataGridView1.CurrentRow.Cells["CompanyName"].Value.ToString();
-                textBox3.Text = dataGridView1.CurrentRow.Cells["ContactName"].Value.ToString();
-                textBox4.Text = dataGridView1.CurrentRow.Cells["ContactTitle"].Value.ToString();
+                textBox1.Text = dataGridView1.CurrentRow.Cells["CategoryID"].Value.ToString();
+                textBox2.Text = dataGridView1.CurrentRow.Cells["CategoryName"].Value.ToString();
+                textBox3.Text = dataGridView1.CurrentRow.Cells["Description"].Value.ToString();
+                textBox4.Text = dataGridView1.CurrentRow.Cells["Picture"].Value.ToString();
             }
         }
 
         private void btnList_Click(object sender, EventArgs e)
         {
-            dataGridView1.DataSource = GetCustomersList();
+            dataGridView1.DataSource = GetCategoriesList();
         }
 
         private void btnInsert_Click(object sender, EventArgs e)
         {
-            Customers c = new Customers();
-            c.CustomerID = textBox1.Text;
-            c.CompanyName = textBox2.Text;
-            c.ContactName = textBox3.Text;
-            c.ContactTitle = textBox4.Text;
+            Categories c = new Categories();
+            c.CategoryName = textBox2.Text;
+            c.Description = textBox3.Text;
+            c.Picture = null;
 
             InsertOrders(c);
         }
 
         private void btnUpdate_Click(object sender, EventArgs e)
         {
-            //UpdateOrders();
+            //var customer = (from x in GetCategoriesList() where x.CategoryID == textBox1.Text select x).FirstOrDefault();
+            //UpdateOrders(customer);
         }
 
         private void btnDelete_Click(object sender, EventArgs e)
